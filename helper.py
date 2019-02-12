@@ -2,10 +2,17 @@
 # -*- coding: utf-8 -*-
 import requests
 import time
-import urllib.parse
 import re
-from urllib import parse
+try: 
+ from urlparse import urlparse
+ from urlparse import urlsplit
+ from urllib   import urlencode
+except:
+ from  urllib.parse import urlparse
+ from  urllib.parse import urlsplit
+ from  urllib.parse import urlencode
 class helper():
+    country="tr"
 
     def __init__(self):
         (int(round(time.time() * 1000)));
@@ -13,11 +20,11 @@ class helper():
     def request_get(self,url,costum_headers= {}, session = {}):
 
         cookies = ""
-        for key, value in session.items():
+        for key, value in list(session.items()):
             cookies+=key+"="+value+"; "
         if(session.__len__()<1):
             cookies = "null = 1;"
-        url_parse = parse.urlsplit(url)
+        url_parse = urlsplit(url)
 
         headers = {
             "Host": url_parse.netloc,
@@ -29,16 +36,16 @@ class helper():
             'sdk-version': "1",
             'Cookie': cookies
         }
-        for c_key, c_value in costum_headers.items():
+        for c_key, c_value in list(costum_headers.items()):
             headers[c_key] = c_value
         return requests.get(url, headers=headers)
     def request_post(self,url,posts = {}, costum_headers= {}, session = {}):
         cookies = ""
-        for key, value in session.items():
+        for key, value in list(session.items()):
             cookies+=key+"="+value+"; "
         if(session.__len__()<1):
             cookies = "null = 1;"
-        url_parse = parse.urlsplit(url)
+        url_parse = urlsplit(url)
         headers = {
             "Host": url_parse.netloc,
             'X-SS-TC': "0",
@@ -49,25 +56,29 @@ class helper():
             'sdk-version': "1",
             'Cookie': cookies
         }
-        for c_key, c_value in costum_headers.items():
+        for c_key, c_value in list(costum_headers.items()):
             headers[c_key] = c_value
         return requests.post(url, headers=headers, data=posts)
     def default_veriable(self,data = {}):
         items = {}
-        items['app_language']  = "tr"
-        items['language']  = "tr"
-        items['region']  = "tr"
+        try:
+           var_country=data["country"]
+        except:
+           var_country="tr"
+        items['app_language']  = var_country
+        items['language']  = var_country
+        items['region']  = var_country
         items['app_type']  = "normal"
-        items['sys_region']  = "TR"
-        items['carrier_region']  = "TR"
+        items['sys_region']  = var_country.upper()
+        items['carrier_region']  = var_country.upper()
         items['carrier_region_v2']  = "286"
         items['build_number']  = "8.4.0"
         items['timezone_offset']  = "10800"
-        items['timezone_name']  = "Europe/Istanbul"
+        items['timezone_name']  = "Europe/Berlin"
         items['mcc_mnc']  = "28601"
         items['is_my_cn']  = "0"
         items['fp']  = ""
-        items['account_region']  = "TR"
+        items['account_region']  = var_country.upper()
         items['iid']  = "6620659482206930694"
         items['ac']  = "wifi"
         items['channel']  = "googleplay"
@@ -93,7 +104,7 @@ class helper():
         items['cp']  = "cbfhckdckkde1"
 
         if(data.__len__()>0):
-            for x,y in data.items():
+            for x,y in list(data.items()):
                 items[x] = y
         return items
     def xor(self,str, key = 5):
@@ -136,7 +147,7 @@ class helper():
         output_value = sign + s
         return output_value
     def query(self,data):
-        return urllib.parse.urlencode(data)
+        return  urlencode(data)
     def user_data_export(self,data):
         data_export = {}
         data_export['user_id'] = data.get('user_id')

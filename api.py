@@ -4,6 +4,7 @@ import requests
 import json
 import os.path
 from helper import helper
+import io
 
 class api():
     api_url = "https://api2.musical.ly/"
@@ -15,7 +16,7 @@ class api():
     def login(self,username,password,capthcha=None):
         username = self.helper.xor(str=username)
         if os.path.exists(username+'.json'):
-            with open(username+'.json', encoding='utf-8') as json_file:
+            with io.open(username+'.json', encoding='utf-8') as json_file:
                 load = json.load(json_file)
                 if(load.get('data')['user_id']):
                     self.active_user = load
@@ -34,7 +35,7 @@ class api():
         }
         login = self.helper.request_post(url,posts)
 
-        print(login.json())
+        print((login.json()))
         if(login.json().get('data').get('captcha')):
                 return {'error':'captcha','code':login.json().get('data').get('captcha')}
 
@@ -132,7 +133,7 @@ class api():
         header['Content-Type'] = 'application/octet-stream;tt-data=a'
         url  = "http://applog.musical.ly/service/2/device_register/"
         data = self.helper.request_post(url,posts=data,costum_headers=header)
-        print(data.content)
+        print((data.content))
     def follow_list(self,user_id = '6594722549190574086', count = 20,max_time = None,session = {}):
         if(max_time==None):
             max_time = int(round(time.time() * 1000))
@@ -145,7 +146,7 @@ class api():
         url = self.api_url + "aweme/v1/user/following/list/?user_id="+str(user_id)+"&count="+str(count)+"&max_time="+str(max_time)+"&retry_type=no_retry&"+self.helper.query(self.helper.default_veriable(self.global_veriable))
         data = self.helper.request_get(self,url,session=session)
         return data.json()
-    ''' Halil İbrahim\'e Teşekkürler  search_hashtag, list_hashtag '''
+    ''' Test  search_hashtag, list_hashtag '''
     def search_hashtag(self,text):
         url = self.api_url + "aweme/v1/challenge/search/?cursor=0&keyword="+text+"&count=10&type=1&hot_search=0&"+self.helper.query(self.helper.default_veriable(self.global_veriable))
         data = self.helper.request_get(self,url)
